@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>🍓 Salada de Fruta Online</title>
+
+    <!-- Fonte -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css" />
+
+  </head>
+
+  <body>
+    <!-- ===================================================== -->
+    <!-- LOADING -->
+    <!-- ===================================================== -->
+
+    <section id="loading-screen">
+      <div class="loading-box">
+        <h1>🍓</h1>
+
+        <h2>Salada de Fruta</h2>
+
+        <span class="loader"></span>
+
+        <p>Conectando...</p>
+      </div>
+    </section>
+
+    <!-- ===================================================== -->
+    <!-- TOAST -->
+    <!-- ===================================================== -->
+
+    <div id="toast">
+      <span id="toast-message"> Mensagem </span>
+    </div>
+
+    <!-- ===================================================== -->
+    <!-- HEADER -->
+    <!-- ===================================================== -->
+
+    <header>
+      <div class="logo">🍓 Salada de Fruta Online</div>
+
+      <div class="header-right">
+        <button
+          id="header-settings-btn"
+          class="icon-button"
+          title="Configurações"
+        >
+          ⚙️
+        </button>
+
+        <div id="player-name-header">Não conectado</div>
+      </div>
+    </header>
+
+    <!-- ===================================================== -->
+    <!-- MAIN -->
+    <!-- ===================================================== -->
+
+    <main>
+      <!-- ===================================================== -->
+      <!-- TELA INICIAL -->
+      <!-- ===================================================== -->
+
+      <section id="home-screen" class="screen active" data-screen="home">
+        <div class="home-container">
+          <div class="game-logo">
+            <div class="fruit-icon">🍓</div>
+
+            <h1>Salada de Fruta</h1>
+
+            <p>Jogue STOP online com seus amigos.</p>
+          </div>
+
+          <div class="card">
+            <h2>Entrar no jogo</h2>
+
+            <div class="input-group">
+              <label for="player-name"> Seu nome </label>
+
+              <input
+                type="text"
+                id="player-name"
+                maxlength="20"
+                placeholder="Digite seu nome"
+              />
+            </div>
+
+            <hr />
+
+            <div class="room-actions">
+              <button id="create-room-btn" class="primary-button">
+                🎲 Criar Sala
+              </button>
+            </div>
+
+            <div class="separator">
+              <span>ou</span>
+            </div>
+
+            <div class="input-group">
+              <label for="room-code"> Código da sala </label>
+
+              <input
+                type="text"
+                id="room-code"
+                maxlength="6"
+                placeholder="ABC123"
+              />
+            </div>
+
+            <button id="join-room-btn" class="secondary-button">
+              🚪 Entrar na Sala
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================== -->
+      <!-- LOBBY -->
+      <!-- ===================================================== -->
+
+      <section id="lobby-screen" class="screen" data-screen="lobby">
+        <div class="lobby-container">
+          <div class="lobby-top">
+            <div>
+              <h2>
+                Sala
+
+                <span id="room-id"> ABC123 </span>
+              </h2>
+            </div>
+
+            <button id="copy-room-code" class="icon-button">
+              📋 Copiar Código
+            </button>
+          </div>
+
+          <div class="players-card">
+            <h3>Jogadores</h3>
+
+            <div id="players-list">
+              <!-- Firebase -->
+            </div>
+          </div>
+
+          <div class="host-actions">
+            <button id="leave-room-btn" class="secondary-button">
+              ← Sair da Sala
+            </button>
+
+            <button id="start-game-btn" class="primary-button">
+              ▶ Iniciar Partida
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================== -->
+      <!-- TELA DA RODADA -->
+      <!-- ===================================================== -->
+
+      <section id="game-screen" class="screen" data-screen="game">
+        <div class="game-container">
+          <!-- TOPO -->
+
+          <div class="game-header">
+            <div class="round-info">
+              <span> Rodada </span>
+
+              <h2 id="round-number">1</h2>
+            </div>
+
+            <div class="timer-box">
+              <span> Tempo </span>
+
+              <h2 id="timer">01:30</h2>
+            </div>
+          </div>
+
+          <!-- LETRA -->
+
+          <div class="letter-card">
+            <span> Letra sorteada </span>
+
+            <h1 id="current-letter">A</h1>
+          </div>
+
+          <!-- FORMULÁRIO -->
+
+          <form id="answers-form" autocomplete="off">
+            <div id="categories-container" class="categories-grid"></div>
+
+            <div class="game-buttons">
+              <button
+                type="submit"
+                id="finish-round-btn"
+                class="primary-button"
+              >
+                ✅ Finalizar Respostas
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- ===================================================== -->
+      <!-- TELA DE VOTAÇÃO -->
+      <!-- ===================================================== -->
+
+      <section id="vote-screen" class="screen" data-screen="vote">
+        <div class="vote-container">
+          <div class="screen-title">
+            <h2>🗳️ Votação</h2>
+
+            <p>Marque cada resposta como válida ou inválida.</p>
+          </div>
+
+          <div id="vote-content">
+            <!-- Criado pelo JavaScript -->
+          </div>
+
+          <div class="vote-actions">
+            <button id="finish-vote-btn" class="primary-button">
+              Finalizar votação
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================== -->
+      <!-- PLACAR -->
+      <!-- ===================================================== -->
+
+      <section id="score-screen" class="screen" data-screen="score">
+        <div class="score-container">
+          <div class="screen-title">
+            <h2>🏆 Placar</h2>
+          </div>
+
+          <div id="scoreboard">
+            <!-- JavaScript -->
+          </div>
+
+          <div class="score-buttons">
+            <button id="next-round-btn" class="primary-button">
+              Próxima rodada
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================== -->
+      <!-- FIM DO JOGO -->
+      <!-- ===================================================== -->
+
+      <section id="winner-screen" class="screen" data-screen="winner">
+        <div class="winner-container">
+          <h1>🏆</h1>
+
+          <h2>Fim da partida</h2>
+
+          <div id="winner-ranking">
+            <!-- Ranking -->
+          </div>
+
+          <button id="play-again-btn" class="primary-button">
+            Jogar novamente
+          </button>
+        </div>
+      </section>
+
+      <!-- ===================================================== -->
+      <!-- CHAT -->
+      <!-- ===================================================== -->
+
+      <aside id="chat-panel">
+        <div class="chat-header">
+          <h3>💬 Chat</h3>
+
+          <button id="close-chat-btn" class="icon-button">✕</button>
+        </div>
+
+        <div id="chat-messages">
+          <!-- Mensagens -->
+        </div>
+
+        <form id="chat-form">
+          <input
+            id="chat-input"
+            type="text"
+            maxlength="150"
+            placeholder="Digite uma mensagem..."
+          />
+
+          <button type="submit" class="primary-button">Enviar</button>
+        </form>
+      </aside>
+
+      <!-- ===================================================== -->
+      <!-- BOTÃO CHAT -->
+      <!-- ===================================================== -->
+
+      <button id="open-chat-btn" class="floating-chat-button">💬</button>
+
+      <!-- ===================================================== -->
+      <!-- MODAL CONFIGURAÇÕES -->
+      <!-- ===================================================== -->
+
+      <div id="settings-modal" class="modal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2>⚙ Configurações</h2>
+
+            <button id="close-settings-btn" class="icon-button">✕</button>
+          </div>
+
+          <div class="modal-body">
+            <div class="setting">
+              <label> Rodadas </label>
+
+              <select id="rounds-select">
+                <option value="5">5</option>
+                <option value="10" selected>10</option>
+                <option value="15">15</option>
+                <option value="20">20</option>
+              </select>
+            </div>
+
+            <div class="setting">
+              <label> Tempo por rodada </label>
+
+              <select id="timer-select">
+                <option value="60">1 minuto</option>
+                <option value="90" selected>1m30s</option>
+                <option value="120">2 minutos</option>
+                <option value="180">3 minutos</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================================================== -->
+      <!-- MODAL DE CONFIRMAÇÃO -->
+      <!-- ===================================================== -->
+
+      <div id="confirm-modal" class="modal">
+        <div class="modal-content small">
+          <h2 id="confirm-title">Confirmar ação</h2>
+
+          <p id="confirm-text">Deseja continuar?</p>
+
+          <div class="modal-buttons">
+            <button id="confirm-cancel" class="secondary-button">
+              Cancelar
+            </button>
+
+            <button id="confirm-accept" class="primary-button">
+              Confirmar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================================================== -->
+      <!-- MODAL AGUARDANDO -->
+      <!-- ===================================================== -->
+
+      <div id="waiting-modal" class="modal">
+        <div class="modal-content small">
+          <span class="loader"></span>
+
+          <h2>Aguardando jogadores...</h2>
+
+          <p>A próxima rodada começará automaticamente.</p>
+        </div>
+      </div>
+
+      <!-- ===================================================== -->
+      <!-- MODAL DESCONECTADO -->
+      <!-- ===================================================== -->
+
+      <div id="disconnect-modal" class="modal">
+        <div class="modal-content small">
+          <h2>⚠️ Conexão perdida</h2>
+
+          <p>Tentando reconectar...</p>
+        </div>
+      </div>
+
+      <!-- ===================================================== -->
+      <!-- OVERLAY -->
+      <!-- ===================================================== -->
+
+      <div id="overlay"></div>
+
+      <!-- ===================================================== -->
+      <!-- FOOTER -->
+      <!-- ===================================================== -->
+
+      <footer>
+        <div>
+          Sala:
+          <strong id="footer-room-code"> ----- </strong>
+        </div>
+
+        <div>
+          Jogadores:
+          <strong id="footer-player-count"> 0 </strong>
+        </div>
+
+        <div>
+          Rodada:
+          <strong id="footer-round"> 0 </strong>
+        </div>
+      </footer>
+
+      <!-- ===================================================== -->
+      <!-- MODAL PERSONALIZAR PARTIDA -->
+      <!-- ===================================================== -->
+
+      <div id="game-config-modal" class="modal">
+        <div class="modal-content large">
+          <div class="modal-header">
+            <h2>🎮 Configurar Partida</h2>
+
+            <button id="close-game-config" class="icon-button">✕</button>
+          </div>
+
+          <div class="modal-body">
+            <div class="config-section">
+              <h3>Categorias</h3>
+
+              <p>
+                Arraste para reorganizar, remova ou adicione novas categorias.
+              </p>
+
+              <div id="categories-editor"></div>
+
+              <div class="new-category">
+                <input
+                  id="new-category-input"
+                  type="text"
+                  maxlength="30"
+                  placeholder="Nova categoria"
+                />
+
+                <button id="add-category-btn" class="primary-button">
+                  Adicionar
+                </button>
+              </div>
+            </div>
+
+            <hr />
+
+            <div class="config-section">
+              <h3>Letras permitidas</h3>
+
+              <div id="letters-grid" class="letters-grid"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===================================================== -->
+      <!-- MENU DO HOST -->
+      <!-- ===================================================== -->
+
+      <div id="host-menu" class="floating-menu">
+        <button id="host-config-btn">⚙ Configurar partida</button>
+
+        <button id="host-reset-btn">🔄 Reiniciar partida</button>
+
+        <button id="host-close-room-btn">🚪 Encerrar sala</button>
+      </div>
+
+      <!-- ===================================================== -->
+      <!-- MENU DO JOGADOR -->
+      <!-- ===================================================== -->
+
+      <div id="player-context-menu" class="floating-menu">
+        <button id="copy-player-name">📋 Copiar nome</button>
+
+        <button id="mute-player">🔇 Silenciar</button>
+      </div>
+
+      <!-- ===================================================== -->
+      <!-- TELA DE ERRO -->
+      <!-- ===================================================== -->
+
+      <section id="error-screen" class="screen" data-screen="error">
+        <div class="error-container">
+          <h1>😕</h1>
+
+          <h2>Algo deu errado.</h2>
+
+          <p id="error-message">Erro desconhecido.</p>
+
+          <button id="back-home-btn" class="primary-button">
+            Voltar ao início
+          </button>
+        </div>
+      </section>
+
+      <!-- ===================================================== -->
+      <!-- ELEMENTOS AUXILIARES -->
+      <!-- ===================================================== -->
+
+      <div id="portal"></div>
+
+      <div id="backdrop"></div>
+
+      <div id="tooltip"></div>
+    </main>
+
+    <div id="app-loader"></div>
+
+    <script type="module" src="script.js"></script>
+  </body>
+</html>
