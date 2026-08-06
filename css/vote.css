@@ -1,0 +1,141 @@
+/* ===================================================== */
+/* VOTAÇÃO */
+/* ===================================================== */
+
+#vote-screen {
+  justify-content: center;
+
+  background: var(--background);
+}
+
+.vote-container {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 2rem;
+}
+
+.screen-title {
+  text-align: center;
+}
+
+.screen-title h2 {
+  color: var(--primary);
+
+  margin-bottom: 0.5rem;
+}
+
+.screen-title p {
+  color: var(--text-light);
+}
+
+/* ===================================================== */
+/* LISTA DE RESPOSTAS */
+/* ===================================================== */
+
+#vote-content {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 1.5rem;
+}
+
+.vote-card {
+  background: var(--surface);
+
+  border-radius: var(--radius-medium);
+
+  box-shadow: var(--shadow-small);
+
+  padding: 1.5rem;
+}
+
+.vote-category {
+  font-size: 1.2rem;
+
+  font-weight: 700;
+
+  margin-bottom: 1rem;
+
+  color: var(--primary);
+}
+
+/* ===================================================== */
+/* RESPOSTAS */
+/* ===================================================== */
+
+.vote-answer {
+  display: flex;
+
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 1rem;
+
+  padding: 1rem 0;
+
+  border-bottom: 1px solid var(--border);
+}
+
+.vote-answer:last-child {
+  border-bottom: none;
+}
+
+.vote-player {
+  font-weight: 600;
+}
+
+.vote-word {
+  color: var(--text-light);
+}
+
+/* ===================================================== */
+/* BOTÕES DE VOTO */
+/* ===================================================== */
+
+.vote-buttons {
+  display: flex;
+
+  gap: 0.75rem;
+}
+
+.vote-valid,
+.vote-invalid {
+  min-width: 95px;
+
+  padding: 0.6rem 1rem;
+
+  border-radius: var(--radius-small);
+
+  font-weight: 600;
+
+  color: white;
+}
+
+.vote-valid {
+  background: var(--secondary);
+}
+
+.vote-valid:hover {
+  background: var(--secondary-hover);
+}
+
+.vote-invalid {
+  background: var(--danger);
+}
+
+.vote-invalid:hover {
+  background: var(--danger-hover);
+}
+
+/* ===================================================== */
+/* FINALIZAR */
+/* ===================================================== */
+
+.vote-actions {
+  display: flex;
+
+  justify-content: flex-end;
+}

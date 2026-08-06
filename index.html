@@ -17,7 +17,6 @@
 
     <!-- CSS -->
     <link rel="stylesheet" href="style.css" />
-
   </head>
 
   <body>
@@ -156,6 +155,37 @@
             </div>
           </div>
 
+          <div class="lobby-info-card">
+            <h3>Informações da Partida</h3>
+
+            <div class="lobby-info">
+              <div class="info-item">
+                <span>👥 Jogadores</span>
+                <strong id="info-players">1 / 8</strong>
+              </div>
+
+              <div class="info-item">
+                <span>🎯 Rodadas</span>
+                <strong id="info-rounds">10</strong>
+              </div>
+
+              <div class="info-item">
+                <span>⏱ Tempo</span>
+                <strong id="info-time">90 s</strong>
+              </div>
+
+              <div class="info-item">
+                <span>📚 Categorias</span>
+                <strong id="info-categories">6</strong>
+              </div>
+
+              <div class="info-item">
+                <span>🔤 Letras</span>
+                <strong id="info-letters">A-Z</strong>
+              </div>
+            </div>
+          </div>
+
           <div class="host-actions">
             <button id="leave-room-btn" class="secondary-button">
               ← Sair da Sala
@@ -178,9 +208,21 @@
 
           <div class="game-header">
             <div class="round-info">
-              <span> Rodada </span>
+              <span>Rodada</span>
 
-              <h2 id="round-number">1</h2>
+              <h2>
+                <span id="round-number">1</span>
+
+                <small>
+                  de
+
+                  <span id="total-rounds">10</span>
+                </small>
+              </h2>
+
+              <div class="round-progress-global">
+                <div id="round-progress-fill"></div>
+              </div>
             </div>
 
             <div class="timer-box">
@@ -188,6 +230,14 @@
 
               <h2 id="timer">01:30</h2>
             </div>
+          </div>
+
+          <div class="round-progress">
+            <div class="progress-bar">
+              <div id="progress-fill"></div>
+            </div>
+
+            <p id="players-finished">0 de 4 jogadores finalizaram</p>
           </div>
 
           <!-- LETRA -->
@@ -213,6 +263,40 @@
               </button>
             </div>
           </form>
+
+          <!-- ===================================================== -->
+          <!-- CHAT -->
+          <!-- ===================================================== -->
+
+          <aside id="game-chat" class="collapsed">
+            <div class="chat-header">
+              <h3>
+                💬 Chat
+
+                <span id="chat-notification">0</span>
+              </h3>
+
+              <button id="toggle-chat-btn" class="icon-button">💬</button>
+            </div>
+
+            <div class="chat-body">
+              <div id="chat-messages">
+                <!-- JavaScript -->
+              </div>
+
+              <form id="chat-form">
+                <input
+                  type="text"
+                  id="chat-input"
+                  maxlength="120"
+                  placeholder="Digite uma mensagem..."
+                  autocomplete="off"
+                />
+
+                <button type="submit">➤</button>
+              </form>
+            </div>
+          </aside>
         </div>
       </section>
 
@@ -250,8 +334,96 @@
             <h2>🏆 Placar</h2>
           </div>
 
-          <div id="scoreboard">
+          <!-- ===================================================== -->
+          <!-- RESUMO DA RODADA -->
+          <!-- ===================================================== -->
+
+          <div id="round-summary">
             <!-- JavaScript -->
+            <!--
+            Exemplo:
+
+            <div class="summary-card">
+
+                <h3>
+                    📊 Resumo da Rodada
+                </h3>
+
+                <div class="summary-player">
+
+                    <strong>Daniel</strong>
+
+                    <ul>
+
+                        <li>⭐ 2 respostas exclusivas (+20)</li>
+
+                        <li>🤝 2 respostas repetidas (+10)</li>
+
+                        <li>❌ 1 resposta inválida (+0)</li>
+
+                        <li>⚠ 1 resposta contestada</li>
+
+                    </ul>
+
+                    <div class="summary-total">
+
+                        +30 pontos
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            -->
+          </div>
+
+          <div id="scoreboard">
+            <!-- Exemplo de estrutura criada pelo JavaScript
+
+              <div class="score-player">
+
+                  <div class="score-position">
+                      🥇
+                  </div>
+
+                  <div>
+
+                      <div class="score-name">
+                          Daniel
+                      </div>
+
+                      <div class="score-stats">
+
+                          <div class="score-stat">
+                              ⭐ 18 Exclusivas
+                          </div>
+
+                          <div class="score-stat">
+                              ✅ 42 Válidas
+                          </div>
+
+                          <div class="score-stat">
+                              ❌ 3 Inválidas
+                          </div>
+
+                          <div class="score-stat">
+                              ⚠ 2 Contestadas
+                          </div>
+
+                      </div>
+
+                  </div>
+
+                  <div class="score-points">
+
+                      95 pts
+
+                  </div>
+
+              </div>
+
+              -->
           </div>
 
           <div class="score-buttons">
@@ -527,6 +699,28 @@
     </main>
 
     <div id="app-loader"></div>
+
+    <!-- ===================================================== -->
+    <!-- MODAL GENÉRICO -->
+    <!-- ===================================================== -->
+
+    <div id="modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="modal-title">Título</h2>
+
+          <button id="close-modal" class="close-modal icon-button">✕</button>
+        </div>
+
+        <div id="modal-body" class="modal-body">
+          <!-- JavaScript -->
+        </div>
+
+        <div id="modal-footer" class="modal-footer">
+          <!-- JavaScript -->
+        </div>
+      </div>
+    </div>
 
     <script type="module" src="script.js"></script>
   </body>

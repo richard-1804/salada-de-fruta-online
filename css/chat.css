@@ -1,0 +1,192 @@
+/* ===================================================== */
+/* CHAT */
+/* ===================================================== */
+
+#game-chat {
+  position: fixed;
+
+  right: 25px;
+  bottom: 25px;
+
+  width: 340px;
+
+  background: rgba(255, 255, 255, 0.96);
+
+  backdrop-filter: blur(18px);
+
+  border-radius: var(--radius-large);
+
+  box-shadow: var(--shadow-large);
+
+  overflow: hidden;
+
+  transition: 0.35s;
+
+  z-index: 999;
+}
+
+/* ===================================================== */
+/* FECHADO */
+/* ===================================================== */
+
+#game-chat.collapsed {
+  width: 180px;
+}
+
+#game-chat.collapsed .chat-body {
+  display: none;
+}
+
+/* ===================================================== */
+/* HEADER */
+/* ===================================================== */
+
+.chat-header {
+  height: 60px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 1rem;
+
+  background: var(--primary);
+
+  color: white;
+}
+
+.chat-header h3 {
+  display: flex;
+
+  align-items: center;
+
+  gap: 0.5rem;
+
+  font-size: 1rem;
+}
+
+#chat-notification {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  min-width: 22px;
+  height: 22px;
+
+  padding: 0 0.4rem;
+
+  border-radius: 999px;
+
+  background: var(--danger);
+
+  font-size: 0.75rem;
+}
+
+.chat-header .icon-button {
+  width: 36px;
+  height: 36px;
+
+  background: rgba(255, 255, 255, 0.15);
+
+  color: white;
+}
+
+.chat-header .icon-button:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* ===================================================== */
+/* CORPO */
+/* ===================================================== */
+
+.chat-body {
+  display: flex;
+
+  flex-direction: column;
+
+  height: 420px;
+}
+
+/* ===================================================== */
+/* MENSAGENS */
+/* ===================================================== */
+
+#chat-messages {
+  flex: 1;
+
+  overflow-y: auto;
+
+  padding: 1rem;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 0.8rem;
+
+  background: #fafafa;
+}
+
+.chat-message {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 0.25rem;
+}
+
+.chat-author {
+  font-size: 0.8rem;
+
+  font-weight: 600;
+
+  color: var(--primary);
+}
+
+.chat-text {
+  padding: 0.75rem;
+
+  background: white;
+
+  border-radius: var(--radius-small);
+
+  box-shadow: var(--shadow-small);
+
+  word-break: break-word;
+}
+
+/* ===================================================== */
+/* INPUT */
+/* ===================================================== */
+
+#chat-form {
+  display: flex;
+
+  border-top: 1px solid var(--border);
+}
+
+#chat-input {
+  flex: 1;
+
+  border: none;
+
+  border-radius: 0;
+
+  background: white;
+}
+
+#chat-form button {
+  width: 65px;
+
+  background: var(--primary);
+
+  color: white;
+
+  font-size: 1.15rem;
+}
+
+#chat-form button:hover {
+  background: var(--primary-hover);
+}
