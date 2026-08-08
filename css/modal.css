@@ -3,28 +3,26 @@
 /* ===================================================== */
 
 .modal {
+  position: fixed;
 
-    position: fixed;
+  inset: 0;
 
-    inset: 0;
+  display: none;
 
-    display: none;
+  justify-content: center;
+  align-items: center;
 
-    justify-content: center;
-    align-items: center;
+  padding: 2rem;
 
-    padding: 2rem;
+  background: rgba(0, 0, 0, 0.55);
 
-    background: rgba(0,0,0,.55);
+  backdrop-filter: blur(6px);
 
-    backdrop-filter: blur(6px);
-
-    z-index: 5000;
+  z-index: 5000;
 }
 
 .modal.active {
-
-    display: flex;
+  display: flex;
 }
 
 /* ===================================================== */
@@ -32,20 +30,19 @@
 /* ===================================================== */
 
 .modal-content {
+  width: min(900px, 100%);
 
-    width: min(900px, 100%);
+  max-height: 85vh;
 
-    max-height: 85vh;
+  overflow-y: auto;
 
-    overflow-y: auto;
+  background: var(--surface);
 
-    background: var(--surface);
+  border-radius: var(--radius-large);
 
-    border-radius: var(--radius-large);
+  box-shadow: var(--shadow-large);
 
-    box-shadow: var(--shadow-large);
-
-    animation: modalShow .25s ease;
+  animation: modalShow 0.25s ease;
 }
 
 /* ===================================================== */
@@ -53,30 +50,27 @@
 /* ===================================================== */
 
 .modal-header {
+  display: flex;
 
-    display: flex;
+  justify-content: space-between;
+  align-items: center;
 
-    justify-content: space-between;
-    align-items: center;
+  padding: 1.5rem 2rem;
 
-    padding: 1.5rem 2rem;
-
-    border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
 }
 
 .modal-header h2 {
-
-    color: var(--primary);
+  color: var(--primary);
 }
 
 .close-modal {
+  width: 42px;
+  height: 42px;
 
-    width: 42px;
-    height: 42px;
+  border-radius: 50%;
 
-    border-radius: 50%;
-
-    font-size: 1.4rem;
+  font-size: 1.4rem;
 }
 
 /* ===================================================== */
@@ -84,8 +78,7 @@
 /* ===================================================== */
 
 .modal-body {
-
-    padding: 2rem;
+  padding: 2rem;
 }
 
 /* ===================================================== */
@@ -93,14 +86,13 @@
 /* ===================================================== */
 
 .modal-footer {
+  display: flex;
 
-    display: flex;
+  justify-content: flex-end;
 
-    justify-content: flex-end;
+  gap: 1rem;
 
-    gap: 1rem;
+  padding: 1.5rem 2rem;
 
-    padding: 1.5rem 2rem;
-
-    border-top: 1px solid var(--border);
+  border-top: 1px solid var(--border);
 }

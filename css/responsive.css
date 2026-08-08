@@ -1,0 +1,397 @@
+/* ===================================================== */
+/* RESPONSIVIDADE */
+/* ===================================================== */
+
+/* ===================================================== */
+/* TABLET / NOTEBOOK PEQUENO */
+/* ===================================================== */
+
+@media (max-width: 1024px) {
+  /* ------------------------------------------------- */
+  /* GERAL */
+  /* ------------------------------------------------- */
+
+  .screen {
+    padding: 1.5rem;
+  }
+
+  /* ------------------------------------------------- */
+  /* HOME */
+  /* ------------------------------------------------- */
+
+  .home-container {
+    width: min(100%, 650px);
+  }
+
+  /* ------------------------------------------------- */
+  /* LOBBY */
+  /* ------------------------------------------------- */
+
+  .lobby-container {
+    width: min(100%, 750px);
+  }
+
+  .lobby-info {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* ------------------------------------------------- */
+  /* JOGO */
+  /* ------------------------------------------------- */
+
+  .game-container {
+    width: min(100%, 850px);
+  }
+
+  .categories-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* ------------------------------------------------- */
+  /* VOTAÇÃO */
+  /* ------------------------------------------------- */
+
+  .vote-container {
+    width: min(100%, 850px);
+  }
+
+  /* ------------------------------------------------- */
+  /* PLACAR */
+  /* ------------------------------------------------- */
+
+  .score-container {
+    width: min(100%, 750px);
+  }
+
+  /* ------------------------------------------------- */
+  /* CHAT */
+  /* ------------------------------------------------- */
+
+  #game-chat {
+    right: 15px;
+    bottom: 15px;
+
+    width: 320px;
+  }
+}
+
+/* ===================================================== */
+/* TABLET PEQUENO / CELULAR GRANDE */
+/* ===================================================== */
+
+@media (max-width: 768px) {
+  /* ------------------------------------------------- */
+  /* GERAL */
+  /* ------------------------------------------------- */
+
+  .screen {
+    min-height: auto;
+
+    padding: 1rem;
+  }
+
+  /* ------------------------------------------------- */
+  /* HEADER */
+  /* ------------------------------------------------- */
+
+  header {
+    padding: 0 1rem;
+  }
+
+  .logo {
+    font-size: 0.95rem;
+  }
+
+  /* ------------------------------------------------- */
+  /* HOME */
+  /* ------------------------------------------------- */
+
+  .home-container {
+    width: 100%;
+  }
+
+  .game-logo h1 {
+    font-size: 2rem;
+  }
+
+  /* ------------------------------------------------- */
+  /* LOBBY */
+  /* ------------------------------------------------- */
+
+  .lobby-top {
+    flex-direction: column;
+
+    align-items: stretch;
+  }
+
+  .lobby-top h2 {
+    text-align: center;
+
+    font-size: 1.6rem;
+  }
+
+  .lobby-info {
+    grid-template-columns: 1fr;
+  }
+
+  .host-actions {
+    flex-direction: column;
+  }
+
+  .host-actions button {
+    width: 100%;
+  }
+
+  /* ------------------------------------------------- */
+  /* JOGO */
+  /* ------------------------------------------------- */
+
+  .game-header {
+    flex-direction: column;
+
+    gap: 1rem;
+  }
+
+  .round-info,
+  .timer-box {
+    width: 100%;
+  }
+
+  .letter-card {
+    padding: 1.5rem;
+  }
+
+  #current-letter {
+    font-size: 4rem;
+  }
+
+  .categories-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .game-buttons {
+    justify-content: stretch;
+  }
+
+  #finish-round-btn {
+    width: 100%;
+  }
+
+  /* ------------------------------------------------- */
+  /* VOTAÇÃO */
+  /* ------------------------------------------------- */
+
+  .vote-answer {
+    flex-direction: column;
+
+    align-items: stretch;
+  }
+
+  .vote-buttons {
+    width: 100%;
+  }
+
+  .vote-valid,
+  .vote-invalid {
+    flex: 1;
+  }
+
+  .vote-actions {
+    width: 100%;
+  }
+
+  .vote-actions button {
+    width: 100%;
+  }
+
+  /* ------------------------------------------------- */
+  /* PLACAR */
+  /* ------------------------------------------------- */
+
+  .score-player {
+    padding: 1rem;
+  }
+
+  .score-stats {
+    flex-wrap: wrap;
+
+    gap: 0.75rem 1rem;
+  }
+
+  .score-buttons {
+    flex-direction: column;
+  }
+
+  .score-buttons button {
+    width: 100%;
+  }
+
+  /* ------------------------------------------------- */
+  /* CHAT */
+  /* ------------------------------------------------- */
+
+  #game-chat {
+    right: 10px;
+    bottom: 10px;
+  }
+}
+
+/* ===================================================== */
+/* CELULAR */
+/* ===================================================== */
+
+@media (max-width: 480px) {
+  /* ------------------------------------------------- */
+  /* GERAL */
+  /* ------------------------------------------------- */
+
+  .screen {
+    padding: 0.75rem;
+  }
+
+  /* ------------------------------------------------- */
+  /* HEADER */
+  /* ------------------------------------------------- */
+
+  header {
+    min-height: 60px;
+  }
+
+  .logo {
+    font-size: 0.85rem;
+  }
+
+  #player-name-header {
+    font-size: 0.8rem;
+  }
+
+  /* ------------------------------------------------- */
+  /* HOME */
+  /* ------------------------------------------------- */
+
+  .game-logo h1 {
+    font-size: 1.7rem;
+  }
+
+  .game-logo p {
+    font-size: 0.9rem;
+  }
+
+  /* ------------------------------------------------- */
+  /* LOBBY */
+  /* ------------------------------------------------- */
+
+  .lobby-top h2 {
+    font-size: 1.4rem;
+  }
+
+  .players-card,
+  .lobby-info-card {
+    padding: 1.25rem;
+  }
+
+  .info-item {
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 0.35rem;
+  }
+
+  /* ------------------------------------------------- */
+  /* JOGO */
+  /* ------------------------------------------------- */
+
+  .round-info,
+  .timer-box {
+    padding: 1rem;
+  }
+
+  .round-info h2,
+  .timer-box h2 {
+    font-size: 1.6rem;
+  }
+
+  #current-letter {
+    font-size: 3.5rem;
+  }
+
+  .category-card {
+    padding: 1.25rem;
+  }
+
+  /* ------------------------------------------------- */
+  /* CHAT */
+  /* ------------------------------------------------- */
+
+  #game-chat {
+    right: 8px;
+    bottom: 8px;
+
+    width: calc(100% - 16px);
+  }
+
+  #game-chat.collapsed {
+    width: 170px;
+  }
+
+  .chat-body {
+    height: 350px;
+  }
+
+  /* ------------------------------------------------- */
+  /* MODAL */
+  /* ------------------------------------------------- */
+
+  .modal {
+    padding: 0.75rem;
+  }
+
+  .modal-content {
+    max-height: 90vh;
+  }
+
+  .modal-header {
+    padding: 1rem 1.25rem;
+  }
+
+  .modal-body {
+    padding: 1.25rem;
+  }
+
+  .modal-footer {
+    padding: 1rem 1.25rem;
+
+    flex-direction: column;
+  }
+
+  .modal-footer button {
+    width: 100%;
+  }
+}
+
+/* ===================================================== */
+/* CELULARES MUITO PEQUENOS */
+/* ===================================================== */
+
+@media (max-width: 360px) {
+  .logo {
+    font-size: 0.75rem;
+  }
+
+  #player-name-header {
+    display: none;
+  }
+
+  .game-logo h1 {
+    font-size: 1.5rem;
+  }
+
+  #current-letter {
+    font-size: 3rem;
+  }
+
+  .chat-header {
+    height: 52px;
+  }
+}

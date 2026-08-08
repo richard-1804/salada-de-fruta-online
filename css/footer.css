@@ -1,0 +1,124 @@
+/* ===================================================== */
+/* FOOTER */
+/* ===================================================== */
+
+.site-footer {
+  width: 100%;
+
+  padding: 1.5rem 2rem;
+
+  background: var(--surface);
+
+  border-top: 1px solid var(--border);
+
+  color: var(--text-light);
+
+  text-align: center;
+
+  margin-top: auto;
+}
+
+/* ===================================================== */
+/* CONTEÚDO */
+/* ===================================================== */
+
+.footer-content {
+  width: min(1100px, 100%);
+
+  margin: 0 auto;
+
+  display: flex;
+
+  justify-content: space-between;
+  align-items: center;
+
+  gap: 1rem;
+}
+
+/* ===================================================== */
+/* MARCA */
+/* ===================================================== */
+
+.footer-brand {
+  display: flex;
+
+  align-items: center;
+
+  gap: 0.5rem;
+
+  font-weight: 600;
+
+  color: var(--text);
+}
+
+/* ===================================================== */
+/* INFORMAÇÕES */
+/* ===================================================== */
+
+.footer-info {
+  display: flex;
+
+  align-items: center;
+
+  gap: 1rem;
+
+  font-size: 0.85rem;
+}
+
+.footer-info a {
+  color: var(--primary);
+
+  text-decoration: none;
+
+  font-weight: 500;
+
+  transition: color 0.2s ease;
+}
+
+.footer-info a:hover {
+  color: var(--primary-hover);
+
+  text-decoration: underline;
+}
+
+/* ===================================================== */
+/* COPYRIGHT */
+/* ===================================================== */
+
+.footer-copyright {
+  font-size: 0.8rem;
+
+  color: var(--text-light);
+}
+
+/* ===================================================== */
+/* RESPONSIVIDADE */
+/* ===================================================== */
+
+@media (max-width: 768px) {
+  .site-footer {
+    padding: 1.25rem 1rem;
+  }
+
+  .footer-content {
+    flex-direction: column;
+
+    justify-content: center;
+
+    text-align: center;
+  }
+
+  .footer-info {
+    flex-wrap: wrap;
+
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-info {
+    flex-direction: column;
+
+    gap: 0.5rem;
+  }
+}
