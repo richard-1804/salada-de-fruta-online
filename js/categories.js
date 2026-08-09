@@ -32,34 +32,32 @@ export function createCategoryCard(category) {
   card.dataset.category = category.id;
 
   card.innerHTML = `
-        <div class="category-header">
+    <div class="category-header">
+      <span class="category-icon">
+        ${category.icon}
+      </span>
 
-            <span class="category-icon">
-                ${category.icon}
-            </span>
+      <label for="answer-${category.id}">
+        ${category.name}
+      </label>
+    </div>
 
-            <label for="answer-${category.id}">
-                ${category.name}
-            </label>
+    <input
+      type="text"
+      id="answer-${category.id}"
+      name="${category.id}"
+      class="category-input"
+      maxlength="30"
+      autocomplete="off"
+      spellcheck="false"
+      placeholder="Digite uma resposta..."
+    />
 
-        </div>
-
-        <input
-            type="text"
-            id="answer-${category.id}"
-            name="${category.id}"
-            class="category-input"
-            maxlength="30"
-            autocomplete="off"
-            spellcheck="false"
-            placeholder="Digite uma resposta..."
-        />
-
-        <span
-            class="category-status"
-            aria-live="polite">
-        </span>
-    `;
+    <span
+      class="category-status"
+      aria-live="polite">
+    </span>
+  `;
 
   return card;
 }

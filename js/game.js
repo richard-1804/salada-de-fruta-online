@@ -17,6 +17,7 @@ import {
   clearAnswers,
   enableAnswers,
   disableAnswers,
+  setupCategoryInputs,
 } from "./categories.js";
 
 import { startTimer, stopTimer, resetTimer } from "./timer.js";
@@ -208,8 +209,16 @@ export function startNextRound() {
   updateLetterDisplay(letter);
 
   // -------------------------------------------------
-  // PREPARAR RESPOSTAS
+  // PREPARAR CATEGORIAS E RESPOSTAS
   // -------------------------------------------------
+
+  const categoriesContainer = document.getElementById("categories-container");
+
+  if (categoriesContainer) {
+    renderCategories(categoriesContainer);
+
+    setupCategoryInputs();
+  }
 
   clearAnswers();
 

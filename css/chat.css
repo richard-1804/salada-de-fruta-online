@@ -3,6 +3,8 @@
 /* ===================================================== */
 
 #game-chat {
+  display: none;
+
   position: fixed;
 
   right: 25px;
@@ -23,6 +25,10 @@
   transition: 0.35s;
 
   z-index: 999;
+}
+
+#game-chat.active {
+  display: block;
 }
 
 /* ===================================================== */

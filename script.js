@@ -1,6 +1,6 @@
 import "./services/firebase.js";
 
-import "./js/app.js";
+import "./js/app.js"; /* Preenchido */
 import "./js/ui.js"; /* Preenchido */
 import "./js/rooms.js"; /* Preenchido */
 import "./js/game.js"; /* Preenchido */

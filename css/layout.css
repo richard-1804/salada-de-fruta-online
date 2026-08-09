@@ -236,7 +236,7 @@ button {
 footer {
   height: var(--footer-height);
 
-  display: flex;
+  display: none;
 
   align-items: center;
   justify-content: space-around;
@@ -387,4 +387,12 @@ footer {
 
 .w-100 {
   width: 100%;
+}
+
+/* ===================================================== */
+/* MENUS FLUTUANTES */
+/* ===================================================== */
+
+.floating-menu {
+    display: none;
 }

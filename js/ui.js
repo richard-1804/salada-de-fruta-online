@@ -276,54 +276,94 @@ export function openModal({
   onConfirm = null,
   onCancel = null,
 }) {
-  const modal = document.getElementById("generic-modal");
+  const modal = document.getElementById("modal");
+
+  const titleElement = document.getElementById("modal-title");
+
+  const bodyElement = document.getElementById("modal-body");
+
+  const footerElement = document.getElementById("modal-footer");
+
+  const closeButton = document.getElementById("close-modal");
 
   if (!modal) {
-    console.warn("Modal genérico não encontrado.");
+    console.warn("Modal não encontrado.");
 
     return;
   }
 
-  const titleElement = modal.querySelector(".modal-title");
-
-  const messageElement = modal.querySelector(".modal-message");
-
-  const confirmButton = modal.querySelector(".modal-confirm");
-
-  const cancelButton = modal.querySelector(".modal-cancel");
+  // -------------------------------------------------
+  // TÍTULO
+  // -------------------------------------------------
 
   if (titleElement) {
     titleElement.textContent = title;
   }
 
-  if (messageElement) {
-    messageElement.textContent = message;
+  // -------------------------------------------------
+  // CONTEÚDO
+  // -------------------------------------------------
+
+  if (bodyElement) {
+    bodyElement.textContent = message;
   }
 
-  if (confirmButton) {
-    confirmButton.textContent = confirmText;
+  // -------------------------------------------------
+  // RODAPÉ
+  // -------------------------------------------------
+
+  if (footerElement) {
+    footerElement.innerHTML = "";
+
+    // Botão cancelar
+    if (cancelText) {
+      const cancelButton = document.createElement("button");
+
+      cancelButton.type = "button";
+
+      cancelButton.className = "secondary-button";
+
+      cancelButton.textContent = cancelText;
+
+      cancelButton.addEventListener("click", () => {
+        if (typeof onCancel === "function") {
+          onCancel();
+        }
+
+        closeModal();
+      });
+
+      footerElement.appendChild(cancelButton);
+    }
+
+    // Botão confirmar
+    if (confirmText) {
+      const confirmButton = document.createElement("button");
+
+      confirmButton.type = "button";
+
+      confirmButton.className = "primary-button";
+
+      confirmButton.textContent = confirmText;
+
+      confirmButton.addEventListener("click", () => {
+        if (typeof onConfirm === "function") {
+          onConfirm();
+        }
+
+        closeModal();
+      });
+
+      footerElement.appendChild(confirmButton);
+    }
   }
 
-  if (cancelButton) {
-    cancelButton.textContent = cancelText;
-  }
+  // -------------------------------------------------
+  // BOTÃO X
+  // -------------------------------------------------
 
-  const closeModal = () => {
-    modal.classList.remove("active");
-  };
-
-  if (confirmButton) {
-    confirmButton.onclick = () => {
-      if (typeof onConfirm === "function") {
-        onConfirm();
-      }
-
-      closeModal();
-    };
-  }
-
-  if (cancelButton) {
-    cancelButton.onclick = () => {
+  if (closeButton) {
+    closeButton.onclick = () => {
       if (typeof onCancel === "function") {
         onCancel();
       }
@@ -331,6 +371,10 @@ export function openModal({
       closeModal();
     };
   }
+
+  // -------------------------------------------------
+  // ABRIR
+  // -------------------------------------------------
 
   modal.classList.add("active");
 }
@@ -340,7 +384,7 @@ export function openModal({
 // =====================================================
 
 export function closeModal() {
-  const modal = document.getElementById("generic-modal");
+  const modal = document.getElementById("modal");
 
   if (!modal) {
     return;
