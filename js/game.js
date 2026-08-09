@@ -29,7 +29,7 @@ import { startTimer, stopTimer, resetTimer } from "./timer.js";
 let gameState = {
   round: 0,
 
-  totalRounds: GAME_CONFIG.ROUNDS,
+  totalRounds: GAME_CONFIG.TOTAL_ROUNDS,
 
   currentLetter: null,
 
