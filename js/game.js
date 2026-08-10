@@ -22,6 +22,8 @@ import {
 
 import { startTimer, stopTimer, resetTimer } from "./timer.js";
 
+import { updateRoom, getRoom } from "../services/firebase-service.js";
+
 // =====================================================
 // ESTADO DA PARTIDA
 // =====================================================
@@ -97,7 +99,7 @@ export function resetGameState() {
   gameState = {
     round: 0,
 
-    totalRounds: GAME_CONFIG.ROUNDS,
+    totalRounds: GAME_CONFIG.TOTAL_ROUNDS,
 
     currentLetter: null,
 
@@ -137,81 +139,21 @@ function updateLetterDisplay(letter) {
 // ATUALIZAR NÚMERO DA RODADA
 // =====================================================
 
-function updateRoundDisplay() {
+function updateRoundDisplay(round = gameState.round) {
   const element = document.getElementById("round-number");
 
   if (!element) {
     return;
   }
 
-  element.textContent = gameState.round;
+  element.textContent = round;
 }
 
 // =====================================================
-// INICIAR PARTIDA
+// PREPARAR INTERFACE DA RODADA
 // =====================================================
 
-export function startGame() {
-  if (!isCurrentPlayerHost()) {
-    console.warn("Somente o host pode iniciar a partida.");
-
-    return false;
-  }
-
-  gameState.round = 0;
-
-  gameState.status = "playing";
-
-  gameState.answers = {};
-
-  gameState.roundFinished = false;
-
-  setRoomStatus("playing");
-
-  startNextRound();
-
-  return true;
-}
-
-// =====================================================
-// INICIAR PRÓXIMA RODADA
-// =====================================================
-
-export function startNextRound() {
-  if (gameState.round >= gameState.totalRounds) {
-    finishGame();
-
-    return;
-  }
-
-  gameState.round++;
-
-  gameState.status = "playing";
-
-  gameState.roundFinished = false;
-
-  gameState.answers = {};
-
-  // -------------------------------------------------
-  // SORTEAR LETRA
-  // -------------------------------------------------
-
-  const letter = drawLetter();
-
-  gameState.currentLetter = letter;
-
-  // -------------------------------------------------
-  // ATUALIZAR INTERFACE
-  // -------------------------------------------------
-
-  updateRoundDisplay();
-
-  updateLetterDisplay(letter);
-
-  // -------------------------------------------------
-  // PREPARAR CATEGORIAS E RESPOSTAS
-  // -------------------------------------------------
-
+function prepareRoundInterface() {
   const categoriesContainer = document.getElementById("categories-container");
 
   if (categoriesContainer) {
@@ -223,20 +165,152 @@ export function startNextRound() {
   clearAnswers();
 
   enableAnswers();
+}
+
+// =====================================================
+// INICIAR PARTIDA
+// =====================================================
+
+export async function startGame() {
+  if (!isCurrentPlayerHost()) {
+    console.warn("Somente o host pode iniciar a partida.");
+
+    return false;
+  }
+
+  const room = getCurrentRoom();
+
+  if (!room) {
+    console.error("Sala atual não encontrada.");
+
+    return false;
+  }
+
+  const firstRound = 1;
+
+  const firstLetter = drawLetter();
+
+  gameState.round = firstRound;
+
+  gameState.status = "playing";
+
+  gameState.currentLetter = firstLetter;
+
+  gameState.answers = {};
+
+  gameState.roundFinished = false;
+
+  setRoomStatus("playing");
 
   // -------------------------------------------------
-  // RESETAR TIMER
+  // SALVAR ESTADO DA PARTIDA NO FIRESTORE
   // -------------------------------------------------
+
+  try {
+    await updateRoom(room.id, {
+      status: "playing",
+
+      currentRound: firstRound,
+
+      currentLetter: firstLetter,
+
+      totalRounds: GAME_CONFIG.TOTAL_ROUNDS,
+
+      roundTime: GAME_CONFIG.ROUND_TIME,
+    });
+  } catch (error) {
+    console.error("Erro ao sincronizar início da partida:", error);
+
+    return false;
+  }
+
+  // -------------------------------------------------
+  // ATUALIZAR INTERFACE DO HOST
+  // -------------------------------------------------
+
+  updateRoundDisplay(firstRound);
+
+  updateLetterDisplay(firstLetter);
+
+  prepareRoundInterface();
 
   resetTimer(GAME_CONFIG.ROUND_TIME);
-
-  // -------------------------------------------------
-  // INICIAR TIMER
-  // -------------------------------------------------
 
   startTimer(GAME_CONFIG.ROUND_TIME, () => {
     finishRound();
   });
+
+  return true;
+}
+
+// =====================================================
+// INICIAR PRÓXIMA RODADA
+// =====================================================
+
+export async function startNextRound() {
+  const room = getCurrentRoom();
+
+  if (!room) {
+    console.error("Sala atual não encontrada.");
+
+    return false;
+  }
+
+  if (gameState.round >= gameState.totalRounds) {
+    await finishGame();
+
+    return false;
+  }
+
+  const nextRound = gameState.round + 1;
+
+  const nextLetter = drawLetter();
+
+  gameState.round = nextRound;
+
+  gameState.status = "playing";
+
+  gameState.currentLetter = nextLetter;
+
+  gameState.roundFinished = false;
+
+  gameState.answers = {};
+
+  // -------------------------------------------------
+  // SINCRONIZAR FIRESTORE
+  // -------------------------------------------------
+
+  try {
+    await updateRoom(room.id, {
+      status: "playing",
+
+      currentRound: nextRound,
+
+      currentLetter: nextLetter,
+    });
+  } catch (error) {
+    console.error("Erro ao sincronizar próxima rodada:", error);
+
+    return false;
+  }
+
+  // -------------------------------------------------
+  // ATUALIZAR INTERFACE
+  // -------------------------------------------------
+
+  updateRoundDisplay(nextRound);
+
+  updateLetterDisplay(nextLetter);
+
+  prepareRoundInterface();
+
+  resetTimer(GAME_CONFIG.ROUND_TIME);
+
+  startTimer(GAME_CONFIG.ROUND_TIME, () => {
+    finishRound();
+  });
+
+  return true;
 }
 
 // =====================================================
@@ -283,7 +357,7 @@ export function submitAnswers() {
 // FINALIZAR RODADA
 // =====================================================
 
-export function finishRound() {
+export async function finishRound() {
   if (gameState.roundFinished) {
     return;
   }
@@ -295,15 +369,6 @@ export function finishRound() {
   stopTimer();
 
   disableAnswers();
-
-  /*
-   * Neste momento o jogo ainda não envia
-   * as respostas para o Firebase.
-   *
-   * Quando o firebase-service estiver pronto,
-   * esta função passará a sincronizar
-   * as respostas entre os jogadores.
-   */
 
   document.dispatchEvent(
     new CustomEvent("game:round-finished", {
@@ -322,12 +387,24 @@ export function finishRound() {
 // FINALIZAR PARTIDA
 // =====================================================
 
-export function finishGame() {
+export async function finishGame() {
   stopTimer();
 
   gameState.status = "finished";
 
   setRoomStatus("finished");
+
+  const room = getCurrentRoom();
+
+  if (room) {
+    try {
+      await updateRoom(room.id, {
+        status: "finished",
+      });
+    } catch (error) {
+      console.error("Erro ao sincronizar fim da partida:", error);
+    }
+  }
 
   document.dispatchEvent(
     new CustomEvent("game:finished", {
@@ -336,6 +413,70 @@ export function finishGame() {
       },
     }),
   );
+}
+
+// =====================================================
+// APLICAR ESTADO RECEBIDO DO FIRESTORE
+// =====================================================
+
+export function applyRemoteGameState(room) {
+  if (!room) {
+    return;
+  }
+
+  const remoteRound = Number(room.currentRound || 0);
+
+  const remoteLetter = room.currentLetter || null;
+
+  const remoteStatus = room.status || "waiting";
+
+  gameState.round = remoteRound;
+
+  gameState.currentLetter = remoteLetter;
+
+  gameState.status = remoteStatus;
+
+  gameState.totalRounds = Number(room.totalRounds || GAME_CONFIG.TOTAL_ROUNDS);
+
+  gameState.roundFinished = false;
+
+  // -------------------------------------------------
+  // SALA AGUARDANDO
+  // -------------------------------------------------
+
+  if (remoteStatus === "waiting") {
+    stopTimer();
+
+    return;
+  }
+
+  // -------------------------------------------------
+  // PARTIDA FINALIZADA
+  // -------------------------------------------------
+
+  if (remoteStatus === "finished") {
+    stopTimer();
+
+    return;
+  }
+
+  // -------------------------------------------------
+  // PARTIDA EM ANDAMENTO
+  // -------------------------------------------------
+
+  if (remoteStatus === "playing" && remoteRound > 0 && remoteLetter) {
+    updateRoundDisplay(remoteRound);
+
+    updateLetterDisplay(remoteLetter);
+
+    prepareRoundInterface();
+
+    resetTimer(Number(room.roundTime || GAME_CONFIG.ROUND_TIME));
+
+    startTimer(Number(room.roundTime || GAME_CONFIG.ROUND_TIME), () => {
+      finishRound();
+    });
+  }
 }
 
 // =====================================================

@@ -5,8 +5,9 @@
 import {
   createRoom,
   joinRoom,
-  removePlayerFromRoom as removePlayerFromFirebase,
+  removePlayerFromRoom,
   subscribeToRoom,
+  updateRoom,
 } from "../services/firebase-service.js";
 
 import {
@@ -31,14 +32,11 @@ import {
   clearCurrentRoom,
 } from "./rooms.js";
 
-// import {
-//   createRoom,
-//   joinRoom,
-//   removePlayerFromRoom,
-//   subscribeToRoom,
-// } from "../services/firebase-service.js";
-
-import { startGame } from "./game.js";
+import {
+  startGame,
+  applyRemoteGameState,
+  getCurrentLetter,
+} from "./game.js";
 
 // =====================================================
 // ESTADO DA APLICAÇÃO
@@ -52,6 +50,68 @@ const appState = {
   isHost: false,
   unsubscribeRoom: null,
 };
+
+// =====================================================
+// OUVIR ALTERAÇÕES DA SALA
+// =====================================================
+
+let unsubscribeRoom = null;
+
+function subscribeToCurrentRoom(roomCode) {
+  // Se já existe uma inscrição anterior, remove
+  if (unsubscribeRoom) {
+    unsubscribeRoom();
+    unsubscribeRoom = null;
+  }
+
+  if (!roomCode) {
+    return;
+  }
+
+  unsubscribeRoom = subscribeToRoom(roomCode, (room) => {
+
+    console.log("🔥 Listener da sala recebeu atualização:", room);
+    
+    if (!room) {
+      console.warn("A sala não existe mais.");
+
+      unsubscribeRoom = null;
+
+      return;
+    }
+
+    // -------------------------------------------------
+    // ATUALIZAR ESTADO LOCAL DA SALA
+    // -------------------------------------------------
+
+    setCurrentRoom(room);
+
+    appState.roomCode = room.code || room.id;
+
+    appState.isHost = room.hostId === getCurrentPlayer()?.id;
+
+    // -------------------------------------------------
+    // ATUALIZAR INTERFACE
+    // -------------------------------------------------
+
+    updateRoomCode(appState.roomCode);
+
+    updateHostControls(appState.isHost);
+
+    renderPlayersList(room);
+
+    // -------------------------------------------------
+    // SINCRONIZAR PARTIDA
+    // -------------------------------------------------
+
+    if (
+      room.status === "playing" ||
+      room.status === "finished"
+    ) {
+      applyRemoteGameState(room);
+    }
+  });
+}
 
 // =====================================================
 // OBTER ELEMENTOS
@@ -151,66 +211,6 @@ function updateRoomState(room) {
   }
 }
 
-// =====================================================
-// OBSERVAR SALA
-// =====================================================
-
-function subscribeToCurrentRoom(roomCode) {
-  // -------------------------------------------------
-  // CANCELAR OBSERVADOR ANTERIOR
-  // -------------------------------------------------
-
-  if (appState.unsubscribeRoom) {
-    appState.unsubscribeRoom();
-    appState.unsubscribeRoom = null;
-  }
-
-  if (!roomCode) {
-    return;
-  }
-
-  // -------------------------------------------------
-  // OBSERVAR FIRESTORE
-  // -------------------------------------------------
-
-  appState.unsubscribeRoom = subscribeToRoom(roomCode, (room) => {
-    // -------------------------------------------------
-    // SALA EXCLUÍDA
-    // -------------------------------------------------
-
-    if (!room) {
-      showToast("A sala foi encerrada.");
-
-      clearCurrentRoom();
-
-      appState.roomCode = null;
-      appState.playerId = null;
-      appState.isHost = false;
-
-      updateRoomCode("---");
-      updatePlayerName("");
-      updateHostControls(false);
-
-      showHome();
-
-      return;
-    }
-
-    // -------------------------------------------------
-    // ATUALIZAR ESTADO
-    // -------------------------------------------------
-
-    updateRoomState(room);
-
-    // -------------------------------------------------
-    // VERIFICAR SE A SALA MUDOU DE ESTADO
-    // -------------------------------------------------
-
-    if (room.status === "playing") {
-      showGame();
-    }
-  });
-}
 
 // =====================================================
 // CRIAR SALA
@@ -275,13 +275,10 @@ async function handleCreateRoom() {
 
     showLobby();
 
+    subscribeToCurrentRoom(room.id);
+
     showToast("Sala criada com sucesso!");
 
-    // -------------------------------------------------
-    // OUVIR SALA EM TEMPO REAL
-    // -------------------------------------------------
-
-    subscribeToRoom(roomCode, handleRoomUpdate);
   } catch (error) {
     console.error("Erro ao criar sala:", error);
 
@@ -385,7 +382,7 @@ async function handleJoinRoom() {
     // TEMPO REAL
     // -------------------------------------------------
 
-    subscribeToRoom(result.roomCode, handleRoomUpdate);
+    subscribeToCurrentRoom(result.roomCode);
   } catch (error) {
     console.error("Erro ao entrar na sala:", error);
 
@@ -405,6 +402,10 @@ async function handleJoinRoom() {
 
 async function handleLeaveRoom() {
   try {
+    if (unsubscribeRoom) {
+  unsubscribeRoom();
+  unsubscribeRoom = null;
+}
     const room = getCurrentRoom();
 
     const player = getCurrentPlayer();
@@ -444,19 +445,11 @@ async function handleStartGame() {
 
   if (!room) {
     showToast("Você não está em uma sala.");
-
-    return;
-  }
-
-  if (!appState.isHost) {
-    showToast("Apenas o host pode iniciar a partida.");
-
     return;
   }
 
   if (!canStartGame(room)) {
     showToast("A partida não pode ser iniciada.");
-
     return;
   }
 
@@ -465,11 +458,25 @@ async function handleStartGame() {
 
     if (!success) {
       showToast("Não foi possível iniciar a partida.");
-
       return;
     }
 
+    // ---------------------------------------------
+    // SINCRONIZAR INÍCIO DA PARTIDA NO FIRESTORE
+    // ---------------------------------------------
+
+    await updateRoom(appState.roomCode, {
+      status: "playing",
+      currentRound: 1,
+      currentLetter: getCurrentLetter(),
+    });
+
+    // ---------------------------------------------
+    // MOSTRAR JOGO NO HOST
+    // ---------------------------------------------
+
     showGame();
+
   } catch (error) {
     console.error("Erro ao iniciar partida:", error);
 
