@@ -34,6 +34,7 @@ import {
 
 import {
   startGame,
+  submitAnswers,
   applyRemoteGameState,
   getCurrentLetter,
 } from "./game.js";
@@ -58,7 +59,10 @@ const appState = {
 let unsubscribeRoom = null;
 
 function subscribeToCurrentRoom(roomCode) {
-  // Se já existe uma inscrição anterior, remove
+  // -------------------------------------------------
+  // CANCELAR OBSERVADOR ANTERIOR
+  // -------------------------------------------------
+
   if (unsubscribeRoom) {
     unsubscribeRoom();
     unsubscribeRoom = null;
@@ -68,46 +72,58 @@ function subscribeToCurrentRoom(roomCode) {
     return;
   }
 
-  unsubscribeRoom = subscribeToRoom(roomCode, (room) => {
+  // -------------------------------------------------
+  // OBSERVAR FIRESTORE
+  // -------------------------------------------------
 
+  unsubscribeRoom = subscribeToRoom(roomCode, (room) => {
     console.log("🔥 Listener da sala recebeu atualização:", room);
-    
+
+    // -------------------------------------------------
+    // SALA EXCLUÍDA
+    // -------------------------------------------------
+
     if (!room) {
       console.warn("A sala não existe mais.");
-
       unsubscribeRoom = null;
-
       return;
     }
 
     // -------------------------------------------------
-    // ATUALIZAR ESTADO LOCAL DA SALA
+    // ATUALIZAR ESTADO LOCAL
     // -------------------------------------------------
 
-    setCurrentRoom(room);
+    console.log("➡️ Chamando updateRoomState()");
 
-    appState.roomCode = room.code || room.id;
+    updateRoomState(room);
 
-    appState.isHost = room.hostId === getCurrentPlayer()?.id;
-
-    // -------------------------------------------------
-    // ATUALIZAR INTERFACE
-    // -------------------------------------------------
-
-    updateRoomCode(appState.roomCode);
-
-    updateHostControls(appState.isHost);
-
-    renderPlayersList(room);
+    console.log("✅ updateRoomState() terminou");
 
     // -------------------------------------------------
-    // SINCRONIZAR PARTIDA
+    // VERIFICAR STATUS DA PARTIDA
     // -------------------------------------------------
 
-    if (
-      room.status === "playing" ||
-      room.status === "finished"
-    ) {
+    console.log("🎮 Status recebido:", room.status);
+
+    if (room.status === "playing") {
+      console.log("🎮 Chamando showGame()");
+
+      showGame();
+
+      console.log("🎮 Chamando applyRemoteGameState()");
+
+      applyRemoteGameState(room);
+
+      console.log("✅ applyRemoteGameState() terminou");
+    }
+
+    // -------------------------------------------------
+    // PARTIDA FINALIZADA
+    // -------------------------------------------------
+
+    if (room.status === "finished") {
+      console.log("🏆 Partida finalizada.");
+
       applyRemoteGameState(room);
     }
   });
@@ -211,7 +227,6 @@ function updateRoomState(room) {
   }
 }
 
-
 // =====================================================
 // CRIAR SALA
 // =====================================================
@@ -251,6 +266,8 @@ async function handleCreateRoom() {
       name: appState.playerName,
     });
 
+    appState.playerId = playerId;
+
     // -------------------------------------------------
     // SALA ATUAL
     // -------------------------------------------------
@@ -278,7 +295,6 @@ async function handleCreateRoom() {
     subscribeToCurrentRoom(room.id);
 
     showToast("Sala criada com sucesso!");
-
   } catch (error) {
     console.error("Erro ao criar sala:", error);
 
@@ -352,6 +368,8 @@ async function handleJoinRoom() {
       name: appState.playerName,
     });
 
+    appState.playerId = playerId;
+
     // -------------------------------------------------
     // SALA
     // -------------------------------------------------
@@ -403,9 +421,9 @@ async function handleJoinRoom() {
 async function handleLeaveRoom() {
   try {
     if (unsubscribeRoom) {
-  unsubscribeRoom();
-  unsubscribeRoom = null;
-}
+      unsubscribeRoom();
+      unsubscribeRoom = null;
+    }
     const room = getCurrentRoom();
 
     const player = getCurrentPlayer();
@@ -476,7 +494,6 @@ async function handleStartGame() {
     // ---------------------------------------------
 
     showGame();
-
   } catch (error) {
     console.error("Erro ao iniciar partida:", error);
 
@@ -551,6 +568,8 @@ function setupEventListeners() {
 
   const copyButton = getElement("copy-room-code");
 
+  const answersForm = getElement("answers-form");
+
   if (createButton) {
     createButton.addEventListener("click", handleCreateRoom);
   }
@@ -569,6 +588,18 @@ function setupEventListeners() {
 
   if (copyButton) {
     copyButton.addEventListener("click", handleCopyRoomCode);
+  }
+
+  // -------------------------------------------------
+  // FINALIZAR RESPOSTAS
+  // -------------------------------------------------
+
+  if (answersForm) {
+    answersForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      submitAnswers();
+    });
   }
 }
 
