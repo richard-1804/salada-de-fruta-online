@@ -4,6 +4,11 @@
 
 import { GAME_CONFIG } from "./constants.js";
 
+import { submitPlayerAnswers } from "../services/firebase-service.js";
+
+import { showToast } from "./ui.js";
+
+
 import {
   getCurrentPlayer,
   getCurrentRoom,
@@ -317,7 +322,7 @@ export async function startNextRound() {
 // FINALIZAR RESPOSTAS DO JOGADOR
 // =====================================================
 
-export function submitAnswers() {
+export async function submitAnswers() {
   if (gameState.status !== "playing") {
     return false;
   }
@@ -330,7 +335,6 @@ export function submitAnswers() {
 
   if (!player) {
     console.error("Jogador atual não encontrado.");
-
     return false;
   }
 
@@ -338,49 +342,49 @@ export function submitAnswers() {
 
   gameState.answers[player.id] = {
     playerId: player.id,
-
     playerName: player.name,
-
     answers,
   };
 
+  // ---------------------------------------------
+  // DESABILITAR AS RESPOSTAS DESTE JOGADOR
+  // ---------------------------------------------
+
   disableAnswers();
 
-  stopTimer();
+  // ---------------------------------------------
+  // ENVIAR RESPOSTAS PARA O FIREBASE
+  // ---------------------------------------------
 
-  finishRound();
+  try {
+    await submitPlayerAnswers(
+      getCurrentRoom()?.code,
+      player.id,
+      {
+        playerName: player.name,
+        round: gameState.round,
+        answers,
+      },
+    );
 
-  return true;
-}
+    console.log("✅ Respostas enviadas para o Firebase.");
+  } catch (error) {
+    console.error("❌ Erro ao enviar respostas:", error);
 
-// =====================================================
-// FINALIZAR RODADA
-// =====================================================
+    showToast("Não foi possível enviar suas respostas.");
 
-export async function finishRound() {
-  if (gameState.roundFinished) {
-    return;
+    return false;
   }
 
-  gameState.roundFinished = true;
+  // ---------------------------------------------
+  // IMPORTANTE:
+  // NÃO finalizamos a rodada aqui.
+  //
+  // Outro jogador ainda pode estar respondendo.
+  // O Firestore decidirá quando a rodada terminar.
+  // ---------------------------------------------
 
-  gameState.status = "voting";
-
-  stopTimer();
-
-  disableAnswers();
-
-  document.dispatchEvent(
-    new CustomEvent("game:round-finished", {
-      detail: {
-        round: gameState.round,
-
-        letter: gameState.currentLetter,
-
-        answers: gameState.answers,
-      },
-    }),
-  );
+  return true;
 }
 
 // =====================================================

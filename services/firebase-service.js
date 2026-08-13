@@ -113,6 +113,8 @@ function normalizeRoom(room, roomId = null) {
 
     players,
 
+    answers: room.answers || {},
+
     settings,
 
     currentRound: room.currentRound || 0,
@@ -517,6 +519,29 @@ export function subscribeToRoom(roomCode, callback) {
 
 export async function roomExists(roomCode) {
   return (await getRoom(roomCode)) !== null;
+}
+
+// =====================================================
+// SALVAR RESPOSTAS DO JOGADOR
+// =====================================================
+
+export async function submitPlayerAnswers(roomCode, playerId, data) {
+  if (!roomCode || !playerId || !data) {
+    throw new Error("Dados das respostas inválidos.");
+  }
+
+  const roomRef = doc(roomsCollection, roomCode);
+
+  await updateDoc(roomRef, {
+    [`answers.${playerId}`]: {
+      playerId,
+      playerName: data.playerName,
+      round: data.round,
+      answers: data.answers,
+      submittedAt: serverTimestamp(),
+    },
+    updatedAt: serverTimestamp(),
+  });
 }
 
 // =====================================================

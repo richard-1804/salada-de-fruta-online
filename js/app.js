@@ -53,6 +53,77 @@ const appState = {
 };
 
 // =====================================================
+// VERIFICAR SE TODOS OS JOGADORES TERMINARAM
+// =====================================================
+
+async function checkAllPlayersSubmitted(room) {
+  if (!room) {
+    return;
+  }
+
+  if (room.status !== "playing") {
+    return;
+  }
+
+  const players = room.players || {};
+  const playerIds = Object.keys(players);
+
+  const answers = room.answers || {};
+
+  if (playerIds.length === 0) {
+    return;
+  }
+
+  const currentRound = Number(room.currentRound || 0);
+
+  const submittedPlayers = playerIds.filter((playerId) => {
+    const playerAnswer = answers[playerId];
+
+    if (!playerAnswer) {
+      return false;
+    }
+
+    return Number(playerAnswer.round) === currentRound;
+  });
+
+  console.log(
+    `📝 Respostas: ${submittedPlayers.length}/${playerIds.length}`,
+  );
+
+  // -------------------------------------------------
+  // AINDA FALTA JOGADOR
+  // -------------------------------------------------
+
+  if (submittedPlayers.length < playerIds.length) {
+    return;
+  }
+
+  // -------------------------------------------------
+  // TODOS TERMINARAM
+  // -------------------------------------------------
+
+  console.log("🎉 Todos os jogadores terminaram a rodada.");
+
+  // Somente o host altera o estado global da sala.
+  if (!appState.isHost) {
+    return;
+  }
+
+  try {
+    await updateRoom(appState.roomCode, {
+      status: "roundFinished",
+    });
+
+    console.log("✅ Rodada encerrada no Firebase.");
+  } catch (error) {
+    console.error(
+      "❌ Erro ao encerrar rodada no Firebase:",
+      error,
+    );
+  }
+}
+
+// =====================================================
 // OUVIR ALTERAÇÕES DA SALA
 // =====================================================
 
@@ -113,6 +184,8 @@ function subscribeToCurrentRoom(roomCode) {
       console.log("🎮 Chamando applyRemoteGameState()");
 
       applyRemoteGameState(room);
+
+      checkAllPlayersSubmitted(room);
 
       console.log("✅ applyRemoteGameState() terminou");
     }
@@ -595,10 +668,14 @@ function setupEventListeners() {
   // -------------------------------------------------
 
   if (answersForm) {
-    answersForm.addEventListener("submit", (event) => {
+    answersForm.addEventListener("submit", async (event) => {
       event.preventDefault();
 
-      submitAnswers();
+      const success = await submitAnswers();
+
+      if (!success) {
+        showToast("Não foi possível enviar suas respostas.");
+      }
     });
   }
 }
